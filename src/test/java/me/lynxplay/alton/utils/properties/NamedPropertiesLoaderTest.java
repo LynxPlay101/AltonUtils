@@ -2,36 +2,36 @@ package me.lynxplay.alton.utils.properties;
 
 import lombok.Getter;
 import me.lynxplay.alton.utils.properties.adapter.SimplePropertyTypeAdapter;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.*;
 
 public class NamedPropertiesLoaderTest {
 
     @Test
     public void defaultLoad() {
         NamedPropertyLoaderTemplate namedPropertyLoaderTemplate = new NamedPropertyLoaderTemplate();
-        namedPropertyLoaderTemplate.add(new SimplePropertyTypeAdapter<>(UUID.class , UUID::fromString));
-        namedPropertyLoaderTemplate.add(new SimplePropertyTypeAdapter<>(AtomicBoolean.class , s -> new AtomicBoolean(s.equalsIgnoreCase("true"))));
+        namedPropertyLoaderTemplate.add(new SimplePropertyTypeAdapter<>(UUID.class, UUID::fromString));
+        namedPropertyLoaderTemplate.add(new SimplePropertyTypeAdapter<>(AtomicBoolean.class, s -> new AtomicBoolean(s.equalsIgnoreCase("true"))));
 
         NamedPropertiesLoader<TestConfiguration> loader = new NamedPropertiesLoader<>(TestConfiguration.class, namedPropertyLoaderTemplate);
 
         Properties properties = buildConfigProperties();
         TestConfiguration config = loader.load(properties);
 
-        assertEquals(config.getString(), "-string");
-        assertEquals(config.getAByte(), Byte.MIN_VALUE);
-        assertEquals(config.getAShort(), Short.MIN_VALUE);
-        assertEquals(config.getAnInt(), Integer.MIN_VALUE);
-        assertEquals(config.getAFloat(), (float) 0);
-        assertEquals(config.getADouble(), (double) 0);
-        assertEquals(config.getALong(), Long.MIN_VALUE);
-        assertEquals(config.getTestEnum(), TestEnum.B);
-        assertEquals(config.getUuid(), UUID.fromString("799b3250-71d0-49f9-8054-9fc0d04ba87b"));
+        assertEquals("-string", config.getString());
+        assertEquals(Byte.MIN_VALUE, config.getAByte());
+        assertEquals(Short.MIN_VALUE, config.getAShort());
+        assertEquals(Integer.MIN_VALUE, config.getAnInt());
+        assertEquals(0f, config.getAFloat());
+        assertEquals(0d, config.getADouble());
+        assertEquals(Long.MIN_VALUE, config.getALong());
+        assertEquals(TestEnum.B, config.getTestEnum());
+        assertEquals(UUID.fromString("799b3250-71d0-49f9-8054-9fc0d04ba87b"), config.getUuid());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -39,7 +39,7 @@ public class NamedPropertiesLoaderTest {
         NamedPropertiesLoader<TestConfiguration> loader = new NamedPropertiesLoader<>(TestConfiguration.class);
 
         Properties properties = buildConfigProperties();
-        properties.setProperty("config.byte" , "notAByte");
+        properties.setProperty("config.byte", "notAByte");
 
         loader.load(properties);
     }
@@ -49,10 +49,10 @@ public class NamedPropertiesLoaderTest {
         NamedPropertiesLoader<TestConfiguration> loader = new NamedPropertiesLoader<>(TestConfiguration.class);
 
         Properties properties = buildConfigProperties();
-        properties.setProperty("config.byte" , "");
+        properties.setProperty("config.byte", "");
 
         TestConfiguration config = loader.load(properties);
-        assertEquals(config.getAByte() , 0);
+        assertEquals(0, config.getAByte());
     }
 
     /**
@@ -77,15 +77,15 @@ public class NamedPropertiesLoaderTest {
     @Getter
     public static class TestConfiguration {
 
-        private String string;
-        private byte aByte;
-        private short aShort;
-        private int anInt;
-        private float aFloat;
-        private double aDouble;
-        private long aLong;
-        private TestEnum testEnum;
-        private UUID uuid;
+        private final String string;
+        private final byte aByte;
+        private final short aShort;
+        private final int anInt;
+        private final float aFloat;
+        private final double aDouble;
+        private final long aLong;
+        private final TestEnum testEnum;
+        private final UUID uuid;
 
         @NamedPropertyConstructor
         public TestConfiguration(@NamedProperty(value = "config.string", defaultValue = "string") String string

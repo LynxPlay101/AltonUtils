@@ -4,8 +4,8 @@ import java.util.function.Function;
 
 public class SimplePropertyTypeAdapter<T> implements PropertyTypeAdapter<T> {
 
-    private Class<T> type;
-    private Function<String, T> converter;
+    private final Class<T> type;
+    private final Function<String, T> converter;
 
     public SimplePropertyTypeAdapter(Class<T> type, Function<String, T> converter) {
         this.type = type;

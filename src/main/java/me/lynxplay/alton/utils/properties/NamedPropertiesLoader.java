@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
  */
 public class NamedPropertiesLoader<T> {
 
-    private Class<T> type;
-    private PropertyTypeAdapter[] adapters;
+    private final Class<T> type;
+    private final PropertyTypeAdapter[] adapters;
 
     /**
      * Creates a new instance of the named property loader, providing the type of config it will load
@@ -37,7 +37,7 @@ public class NamedPropertiesLoader<T> {
     /**
      * Creates a new instance of the named property loader, providing the type of config it will load
      *
-     * @param type the type
+     * @param type     the type
      * @param template the template this loader is based on
      */
     public NamedPropertiesLoader(Class<T> type, NamedPropertyLoaderTemplate template) {
@@ -47,7 +47,7 @@ public class NamedPropertiesLoader<T> {
     /**
      * Creates a new instance of the named property loader, providing the type of config it will load
      *
-     * @param type the type
+     * @param type     the type
      * @param adapters the adapters that this loader has access too
      */
     public NamedPropertiesLoader(Class<T> type, PropertyTypeAdapter[] adapters) {
@@ -61,7 +61,7 @@ public class NamedPropertiesLoader<T> {
      * @param properties the properties instance to pull the values from
      * @return the created instance
      * @throws IllegalArgumentException if the passed on config type does not provide one, and only one
-     * constructor annotated with {@link NamedPropertyConstructor}
+     *                                  constructor annotated with {@link NamedPropertyConstructor}
      * @throws IllegalArgumentException if a string value found in the properties file could not be converted to the requested type
      * @throws IllegalArgumentException if the annotated constructor defines parameters without a {@link NamedProperty} annotation
      * @throws IllegalArgumentException if the provided type is an enclosed type and needs the instance of the enclosing class to be instantiated
@@ -125,14 +125,18 @@ public class NamedPropertiesLoader<T> {
     }
 
     /**
-     * Converts a given string into the provided type by parsing it
+     * Converts a given string into the provided type by parsing it.
+     * The method is annotated with {@link SuppressWarnings} as Enum.valueOf technically needs a class matching
+     * <Type extends Enum<Type>>, which we don't be able to provide
      *
-     * @param input the input string
-     * @param type the type to convert it into
+     * @param input           the input string
+     * @param type            the type to convert it into
+     * @param <ParameterType> defines the generic type of the class the input should be parsed to
      * @return the converted value
      * @throws NumberFormatException if the type was a primitive number but the string could not be parsed
      */
-    public Object convert(String input, Class<?> type) throws NumberFormatException {
+    @SuppressWarnings("unchecked")
+    public <ParameterType> Object convert(String input, Class<ParameterType> type) throws NumberFormatException {
         if (Primitives.isWrapperType(type)) type = Primitives.unwrap(type);
 
         if (Objects.equals(byte.class, type)) return Byte.parseByte(input);
@@ -143,7 +147,7 @@ public class NamedPropertiesLoader<T> {
         if (Objects.equals(long.class, type)) return Long.parseLong(input);
         if (Objects.equals(String.class, type)) return input;
 
-        if (type.isEnum()) return Enum.valueOf(type.asSubclass(Enum.class), input.toUpperCase().replaceAll(" ", "_"));
+        if (type.isEnum()) return Enum.valueOf(type.asSubclass(Enum.class), input);
         return null;
     }
 }

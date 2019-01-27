@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>alton</artifactId>
-        <groupId>me.lynxplay</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+
+    <artifactId>alton-utils</artifactId>
+    <groupId>me.lynxplay</groupId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
@@ -15,8 +15,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
     </properties>
-
-    <artifactId>alton-utils</artifactId>
 
     <repositories>
         <repository>
